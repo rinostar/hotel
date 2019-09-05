@@ -1,18 +1,14 @@
-require_relative 'reservation'
-require_relative 'date_range'
-require_relative 'booker'
-require_relative 'block'
+require_relative "reservation"
+require_relative "booker"
+require_relative "block"
 
 module Hotel
   class Room
-    attr_reader :number, :cost, :reservations
-    attr_accessor :status
+    attr_reader :number, :bookings
 
-    def initialize(number:, status: 'AVAILABLE', reservation: nil)
+    def initialize(number:, booking: nil)
       @number = number
-      @cost = 200
-      @status = status
-      @reservations = reservation || []
+      @bookings = booking || []
 
       if @number.class != Integer 
         raise ArgumentError, "room number must be an interger"
@@ -20,15 +16,7 @@ module Hotel
         raise ArgumentError, "room number must be within the 1 to 20 range"
       end
 
-      if ['AVAILABLE', 'UNAVAILABLE'].include?(@status) == false
-        raise ArgumentError, "invaid input for room status"
-      end
-
     end
-
-    # def add_reservation(reservation)
-    #   @reservations << reservation
-    # end
 
   end
 
