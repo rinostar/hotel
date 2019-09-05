@@ -53,7 +53,7 @@ describe "Room class" do
   #     )
   #     @reservation = Hotel::Reservation.new(
   #       start_date: Date.today
-  #       end_date: Date.todat + 3
+  #       end_date: Date.today + 3
   #     )
   #   end
 

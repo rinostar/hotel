@@ -5,12 +5,12 @@ require_relative 'block'
 
 module Hotel
   class Room
-    attr_reader :number, :cost
-    attr_accessor :status, :reservations
+    attr_reader :number, :cost, :reservations
+    attr_accessor :status
 
     def initialize(number:, status: 'AVAILABLE', reservation: nil)
       @number = number
-      @cost = 200 # dollar per night
+      @cost = 200
       @status = status
       @reservations = reservation || []
 
@@ -23,6 +23,7 @@ module Hotel
       if ['AVAILABLE', 'UNAVAILABLE'].include?(@status) == false
         raise ArgumentError, "invaid input for room status"
       end
+
     end
 
     # def add_reservation(reservation)
@@ -30,4 +31,5 @@ module Hotel
     # end
 
   end
+
 end
