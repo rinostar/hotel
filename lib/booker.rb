@@ -4,12 +4,23 @@ require_relative "block"
 
 module Hotel
   class Booker
-    attr_reader :rooms
+    attr_reader :inventory, :rooms, :reservations
 
-    def initialize
+    def initialize(inventory:)
+      @inventory = inventory
       @rooms = []
-      (1..20).each do |n|
-        @rooms << Room.new(number: n)
+      @reservations = []
+
+      if @inventory.class != Integer
+        raise ArgumentError, "inventory has to be an integer"
+      elsif @inventory < 1 
+        raise ArgumentError, "inventory can't be less than 1"
+      else
+        n = 1
+        @inventory.times do
+          @rooms << Room.new(number: n)
+          n += 1
+        end
       end
 
     end
@@ -17,6 +28,10 @@ module Hotel
     # def make_reservation
     # def search_reservation
 
+  end
+
+  def all_rooms
+    return @rooms
   end
 
 end
