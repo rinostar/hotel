@@ -1,7 +1,7 @@
 require_relative "test_helper"
 
 describe "Booker class" do 
-  
+   
   describe "Booker initialization" do
     
     it "throws argument erros for invalid inventory input" do
@@ -30,7 +30,7 @@ describe "Booker class" do
     end
 
   end
-
+  
   describe "all_rooms method" do 
     it "must return an array of Room instances matching with the inventory number" do
       expect(Hotel::Booker.new(inventory: 33).all_rooms).must_be_kind_of Array
@@ -41,6 +41,49 @@ describe "Booker class" do
 
   end
 
+  describe "available_rooms method" do
+    before do
+      @new_booker = Hotel::Booker.new(inventory: 2)
+    end
+    
+    it "throws ArgumentError for invalid check_in and check_out dates" do
+      expect{ @new_booker.make_reservation(check_in: "2019-09-01", check_out: "2019-09-01") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-09-02", check_out: "2019-09-01") }.must_raise ArgumentError
+    end
+    
+    it "throws ArgumentError when there is no available rooms during the given date range" do 
+      rooms = @new_booker.rooms
+      rooms[0].bookings << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
+      rooms[1].bookings << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
+
+      expect{ @new_booker.make_reservation(check_in: "2019-09-02", check_out: "2019-09-04") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-09-01", check_out: "2019-09-05") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-08-30", check_out: "2019-09-03") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-09-03", check_out: "2019-09-07") }.must_raise ArgumentError
+    end
+
+    it "returns an array of all Room instances avaliable during the given date range" do 
+      rooms = @new_booker.rooms
+      rooms[0].bookings << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
+      rooms[1].bookings << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
+    
+      search_1 = @new_booker.available_rooms(check_in: "2019-09-04", check_out: "2019-09-07")
+      search_2 = @new_booker.available_rooms(check_in: "2019-08-30", check_out: "2019-09-01")
+
+      expect(search_1).must_be_kind_of Array
+      expect(search_2).must_be_kind_of Array
+
+      expect(search_1.length).must_equal 1
+      expect(search_2.length).must_equal 2
+
+      expect(search_1[0]).must_be_kind_of Hotel::Room
+      expect(search_2.first).must_be_kind_of Hotel::Room
+      expect(search_2.last).must_be_kind_of Hotel::Room
+
+    end
+
+  end
+  
   describe "make_reservation method" do
     before do
       @new_booker = Hotel::Booker.new(inventory: 2)
@@ -51,10 +94,10 @@ describe "Booker class" do
       expect{ @new_booker.make_reservation(check_in: "2019-09-02", check_out: "2019-09-01") }.must_raise ArgumentError
     end
 
-    it "throws ArgumentError when there is no available rooms during the given date range - B" do 
-      rooms = @new_booker.instance_variable_get(:@rooms)
-      rooms[0].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
-      rooms[1].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
+    it "throws ArgumentError when there is no available rooms during the given date range" do 
+      rooms = @new_booker.rooms
+      rooms[0].bookings << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
+      rooms[1].bookings << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
 
       expect{ @new_booker.make_reservation(check_in: "2019-09-02", check_out: "2019-09-04") }.must_raise ArgumentError
       expect{ @new_booker.make_reservation(check_in: "2019-09-01", check_out: "2019-09-05") }.must_raise ArgumentError
@@ -63,30 +106,30 @@ describe "Booker class" do
     end
 
     it "creats a Resveration instance with the correct Room instance(s)" do 
-      rooms = @new_booker.instance_variable_get(:@rooms)
-      rooms[0].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
-      rooms[1].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
+      rooms = @new_booker.rooms
+      rooms[0].bookings << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
+      rooms[1].bookings << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
       new_reservation = @new_booker.make_reservation(check_in: "2019-09-04", check_out: "2019-09-07")
-      reserved_room = new_reservation.instance_variable_get(:@room)
-      updated_room_bookings = reserved_room.instance_variable_get(:@bookings)
+      reserved_room = new_reservation.room
+      updated_room_bookings = reserved_room.bookings
 
       expect(new_reservation).must_be_kind_of Hotel::Reservation
-      expect(reserved_room.instance_variable_get(:@number)).must_equal 1
+      expect(reserved_room.number).must_equal 1
       expect(updated_room_bookings.length).must_equal 2
 
     end
 
   end
-
+  
   describe "search_reservation method" do 
     before do
       @new_booker = Hotel::Booker.new(inventory: 2)
     end
 
     it "creates an array of all reservations on that date" do
-      rooms = @new_booker.instance_variable_get(:@rooms)
-      rooms[0].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-10-20", check_out: "2019-10-25", room: 1)
-      rooms[1].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-30", check_out: "2019-10-20", room: 2)
+      rooms = @new_booker.rooms
+      rooms[0].bookings << Hotel::Reservation.new(check_in: "2019-10-20", check_out: "2019-10-25", room: 1)
+      rooms[1].bookings << Hotel::Reservation.new(check_in: "2019-09-30", check_out: "2019-10-20", room: 2)
       result_1 = @new_booker.search_reservation(date: '2019-10-03')
       result_2 = @new_booker.search_reservation(date: '2019-10-20')
       result_3 = @new_booker.search_reservation(date: '2019-10-26')
