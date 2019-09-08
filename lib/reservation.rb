@@ -11,14 +11,17 @@ module Hotel
     def initialize(check_in:, check_out:, room: nil)
       @check_in = Date.parse(check_in.to_s)
       @check_out = Date.parse(check_out.to_s)
-      @total_cost = (@check_out.mjd - @check_in.mjd) * 200
-      # mjd method: source - stack overflow.com
+      @total_cost = (@check_out - @check_in).to_i * 200
       @room = room || nil
 
       if @check_out <= @check_in
         raise ArgumentError, "End time can't be earlier than or equal to start time"
       end
+   
+    end
 
+    def total_cost
+      return @total_cost
     end
 
   end

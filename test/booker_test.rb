@@ -31,9 +31,79 @@ describe "Booker class" do
 
   end
 
-  # describe make_reservation
+  describe "all_rooms method" do 
+    it "must return an array of Room instances matching with the inventory number" do
+      expect(Hotel::Booker.new(inventory: 33).all_rooms).must_be_kind_of Array
+      expect(Hotel::Booker.new(inventory: 33).all_rooms.first).must_be_kind_of Hotel::Room
+      expect(Hotel::Booker.new(inventory: 33).all_rooms.last).must_be_kind_of Hotel:: Room
+      expect(Hotel::Booker.new(inventory: 33).all_rooms.length).must_equal 33
+    end
 
-  # describe search_reservation
+  end
+
+  describe "make_reservation method" do
+    before do
+      @new_booker = Hotel::Booker.new(inventory: 2)
+    end
+
+    it "throws ArgumentError for invalid check_in and check_out dates" do
+      expect{ @new_booker.make_reservation(check_in: "2019-09-01", check_out: "2019-09-01") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-09-02", check_out: "2019-09-01") }.must_raise ArgumentError
+    end
+
+    it "throws ArgumentError when there is no available rooms during the given date range - B" do 
+      rooms = @new_booker.instance_variable_get(:@rooms)
+      rooms[0].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
+      rooms[1].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
+
+      expect{ @new_booker.make_reservation(check_in: "2019-09-02", check_out: "2019-09-04") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-09-01", check_out: "2019-09-05") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-08-30", check_out: "2019-09-03") }.must_raise ArgumentError
+      expect{ @new_booker.make_reservation(check_in: "2019-09-03", check_out: "2019-09-07") }.must_raise ArgumentError
+    end
+
+    it "creats a Resveration instance with the correct Room instance(s)" do 
+      rooms = @new_booker.instance_variable_get(:@rooms)
+      rooms[0].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
+      rooms[1].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-02", check_out: "2019-09-05", room: 2)
+      new_reservation = @new_booker.make_reservation(check_in: "2019-09-04", check_out: "2019-09-07")
+      reserved_room = new_reservation.instance_variable_get(:@room)
+      updated_room_bookings = reserved_room.instance_variable_get(:@bookings)
+
+      expect(new_reservation).must_be_kind_of Hotel::Reservation
+      expect(reserved_room.instance_variable_get(:@number)).must_equal 1
+      expect(updated_room_bookings.length).must_equal 2
+
+    end
+
+  end
+
+  describe "search_reservation method" do 
+    before do
+      @new_booker = Hotel::Booker.new(inventory: 2)
+    end
+
+    it "creates an array of all reservations on that date" do
+      rooms = @new_booker.instance_variable_get(:@rooms)
+      rooms[0].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-10-20", check_out: "2019-10-25", room: 1)
+      rooms[1].instance_variable_get(:@bookings) << Hotel::Reservation.new(check_in: "2019-09-30", check_out: "2019-10-20", room: 2)
+      result_1 = @new_booker.search_reservation(date: '2019-10-03')
+      result_2 = @new_booker.search_reservation(date: '2019-10-20')
+      result_3 = @new_booker.search_reservation(date: '2019-10-26')
+
+      expect(result_1).must_be_kind_of Array
+      expect(result_2).must_be_kind_of Array
+      expect(result_3).must_be_kind_of Array
+
+      expect(result_1.length).must_equal 1
+      expect(result_2.length).must_equal 2
+      expect(result_3.length).must_equal 0
+
+      expect(result_1[0]).must_be_kind_of Hotel::Reservation
+      expect(result_2[1]).must_be_kind_of Hotel::Reservation
+    end
+
+  end
 
 end
     

@@ -44,4 +44,17 @@ describe "Reservation class" do
 
   end
 
+  describe "total_cost method" do 
+
+    it "returns the total cost for a specific reservation" do 
+      sample_1 = Hotel::Reservation.new(check_in: "1998-03-30", check_out: "1998-04-02")
+      sample_2 = Hotel::Reservation.new(check_in: "1998-05-01", check_out: "1998-05-31")
+    
+      expect(sample_1.instance_variable_get(:@total_cost)).must_equal 600
+      expect(sample_2.instance_variable_get(:@total_cost)).must_equal 6000
+
+    end
+
+  end
+
 end

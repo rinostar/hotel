@@ -1,3 +1,5 @@
+require "date"
+
 require_relative "reservation"
 require_relative "booker"
 require_relative "block"
@@ -12,8 +14,8 @@ module Hotel
 
       if @number.class != Integer 
         raise ArgumentError, "room number must be an interger"
-      elsif (1..20).include?(@number) == false
-        raise ArgumentError, "room number must be within the 1 to 20 range"
+      elsif @number < 1
+        raise ArgumentError, "room number can not be less than 1"
       end
 
     end

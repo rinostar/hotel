@@ -13,10 +13,9 @@ describe "Room class" do
       expect { Hotel::Room.new(number: 'hi') }.must_raise ArgumentError
     end
 
-    it "throws an argument error with a integer input for number that's outside the 1 to 20 range" do
+    it "throws an argument error with a integer less than 1" do
       expect { Hotel::Room.new(number: -1) }.must_raise ArgumentError
       expect { Hotel::Room.new(number: 0) }.must_raise ArgumentError
-      expect { Hotel::Room.new(number: 21) }.must_raise ArgumentError
     end
 
     it "sets bookings to an empty array if not provided" do
