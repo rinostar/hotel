@@ -5,8 +5,8 @@ describe "Booker class" do
   describe "Booker initialization" do
     
     it "throws argument erros for invalid inventory input" do
-      expect{Hotel::Booker.new('20')}.must_raise ArgumentError
-      expect{Hotel::Booker.new(0)}.must_raise ArgumentError
+      expect{Hotel::Booker.new(inventory: '20')}.must_raise ArgumentError
+      expect{Hotel::Booker.new(inventory: 0)}.must_raise ArgumentError
     end
     
     before do
@@ -62,6 +62,11 @@ describe "Booker class" do
       expect{ @new_booker.make_reservation(check_in: "2019-09-03", check_out: "2019-09-07") }.must_raise ArgumentError
     end
 
+    it "will add room with no bookings to the avaliable rooms search result" do 
+      search = @new_booker.available_rooms(check_in: "2019-09-08", check_out: "2019-09-09")
+      expect(search.length).must_equal 2
+    end
+
     it "returns an array of all Room instances avaliable during the given date range" do 
       rooms = @new_booker.rooms
       rooms[0].bookings << Hotel::Reservation.new(check_in: "2019-09-01", check_out: "2019-09-04", room: 1)
@@ -79,7 +84,6 @@ describe "Booker class" do
       expect(search_1[0]).must_be_kind_of Hotel::Room
       expect(search_2.first).must_be_kind_of Hotel::Room
       expect(search_2.last).must_be_kind_of Hotel::Room
-
     end
 
   end
@@ -124,6 +128,15 @@ describe "Booker class" do
   describe "search_reservation method" do 
     before do
       @new_booker = Hotel::Booker.new(inventory: 2)
+    end
+
+    it "throws ArgumentError when there is no available rooms during the given date range" do 
+      rooms = @new_booker.rooms
+      rooms[0].bookings << Hotel::Reservation.new(check_in: "2019-09-07", check_out: "2019-09-08", room: 1)
+      rooms[1].bookings << Hotel::Reservation.new(check_in: "2019-09-08", check_out: "2019-09-09", room: 2)
+
+      expect{ @new_booker.make_reservation(check_in: "2019-09-02", check_out: "2019-09-08") }.must_raise ArgumentError
+  
     end
 
     it "creates an array of all reservations on that date" do

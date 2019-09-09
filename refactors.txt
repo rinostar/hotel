@@ -1,0 +1,7 @@
+Simplify "make_reservation" method for Booker by utilizing its "available_room" method
+Research Date gem ~ current code requires user input in string for "check_in" & "check_out"
+Update all syntax from "instance_variable_get" to "." in all files
+Update test files to reach 100% code coverage
+Finish Wave_3 (& additional enhancement as time allows)
+Remove "@reservations" from Booker if no longer useful/necessary for the design
+Keep practicing and get really comfortable with VS code debugging tool, guard, and SimpleCov

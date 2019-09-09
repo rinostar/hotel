@@ -39,7 +39,7 @@ module Hotel
 
       availability = 0
       @rooms.each do |room|
-        if room.bookings.length == 0
+        if room.bookings == nil
           available_rooms << room
 
         else
