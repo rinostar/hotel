@@ -23,11 +23,6 @@ describe "Room class" do
       expect(Hotel::Room.new(number: 3).bookings.length).must_equal 0
     end
 
-    # it "adds booking to the bookings array if provided" do
-    #   expect(Hotel::Room.new(number: 3, booking: Reservation.new).bookings).must_be_kind_of Array
-    #   expect(Hotel::Room.new(number: 3, booking: Reservation.new).bookings.length).must_equal 1
-    # end
-
     it "is set up for specific attributes and data types" do
       room = Hotel::Room.new(number: 5)
       [:number, :bookings].each do |prop|
