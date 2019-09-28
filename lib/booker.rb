@@ -28,10 +28,6 @@ module Hotel
     
     end
 
-    def all_rooms
-      return @rooms  
-    end
-
     def available_rooms(check_in:, check_out:)
       start_date = Date.parse(check_in.to_s)
       end_date = Date.parse(check_out.to_s)

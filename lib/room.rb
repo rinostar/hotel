@@ -20,6 +20,10 @@ module Hotel
 
     end
 
+    def price
+      return 200
+    end 
+
     # would create a add_room method if the hotel would expand rooms in the future
 
   end

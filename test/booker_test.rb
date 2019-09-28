@@ -30,16 +30,6 @@ describe "Booker class" do
     end
 
   end
-  
-  describe "all_rooms method" do 
-    it "must return an array of Room instances matching with the inventory number" do
-      expect(Hotel::Booker.new(inventory: 33).all_rooms).must_be_kind_of Array
-      expect(Hotel::Booker.new(inventory: 33).all_rooms.first).must_be_kind_of Hotel::Room
-      expect(Hotel::Booker.new(inventory: 33).all_rooms.last).must_be_kind_of Hotel:: Room
-      expect(Hotel::Booker.new(inventory: 33).all_rooms.length).must_equal 33
-    end
-
-  end
 
   describe "available_rooms method" do
     before do

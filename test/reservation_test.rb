@@ -16,12 +16,6 @@ describe "Reservation class" do
       expect {Hotel::Reservation.new(check_in: check_in, check_out: check_out)}.must_raise ArgumentError
     end
 
-    it "calculates total cost correctly" do
-      check_in = "2019-09-01"
-      check_out = "2019-09-04"
-      expect(Hotel::Reservation.new(check_in: check_in, check_out: check_out).total_cost).must_equal 600
-    end
-
     it "sets room to nil if not provided" do
       check_in = "2019-09-01"
       check_out = "2019-09-04"
@@ -32,13 +26,12 @@ describe "Reservation class" do
       check_in = "2019-09-01"
       check_out = "2019-09-04"
       reservation = Hotel::Reservation.new(check_in: check_in, check_out: check_out)
-      [:check_in, :check_out, :total_cost, :room].each do |prop|
+      [:check_in, :check_out, :room].each do |prop|
         expect(reservation).must_respond_to prop
       end
   
       expect(reservation.check_in).must_be_kind_of Date
       expect(reservation.check_out).must_be_kind_of Date
-      expect(reservation.total_cost).must_be_kind_of Integer
       expect(reservation.room).must_be_nil
     end
 
@@ -47,11 +40,11 @@ describe "Reservation class" do
   describe "total_cost method" do 
 
     it "returns the total cost for a specific reservation" do 
-      sample_1 = Hotel::Reservation.new(check_in: "1998-03-30", check_out: "1998-04-02")
-      sample_2 = Hotel::Reservation.new(check_in: "1998-05-01", check_out: "1998-05-31")
+      sample_1 = Hotel::Reservation.new(check_in: "1998-03-30", check_out: "1998-04-02", room: Hotel::Room.new(number: 1))
+      sample_2 = Hotel::Reservation.new(check_in: "1998-05-01", check_out: "1998-05-31", room: Hotel::Room.new(number: 2))
     
-      expect(sample_1.instance_variable_get(:@total_cost)).must_equal 600
-      expect(sample_2.instance_variable_get(:@total_cost)).must_equal 6000
+      expect(sample_1.total_cost).must_equal 600
+      expect(sample_2.total_cost).must_equal 6000
 
     end
 

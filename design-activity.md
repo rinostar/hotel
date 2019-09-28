@@ -33,3 +33,5 @@ Implementation B.
 
 9. Bonus question once you've read Metz ch. 3: Which implementation is more loosely coupled?
 Implementation B.
+
+10. To ensure the code's adaptability to future changes on room unit price, I will delegate the price info to the Room class, and call it from Reservation class to calculate total price per reservation. 
